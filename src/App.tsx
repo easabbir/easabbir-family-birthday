@@ -67,9 +67,16 @@ function App() {
     const supabase = initSupabase(syncConfig.url, syncConfig.key);
     if (supabase && syncConfig.familyId) {
       setIsSyncing(true);
+      
+      // Initial Fetch
       supabase.from('family_members').select('*').eq('family_id', syncConfig.familyId)
       .then(({ data, error }) => {
-        if (!error && data) {
+        if (error) {
+          console.error('[Supabase Error] Fetch failed:', error.message);
+          if (error.code === 'PGRST116') console.warn('Table not found. Please check your Supabase schema.');
+          if (error.code === '42P01') console.warn('Row Level Security (RLS) might be blocking access.');
+        }
+        if (data) {
           setMembers(prev => {
             const merged = [...prev];
             data.forEach((remote: any) => {
@@ -84,6 +91,41 @@ function App() {
         }
         setIsSyncing(false);
       });
+
+      // Real-time Subscription
+      const channel = supabase.channel(`family-${syncConfig.familyId}`)
+        .on('postgres_changes', { 
+          event: '*', 
+          schema: 'public', 
+          table: 'family_members',
+          filter: `family_id=eq.${syncConfig.familyId}`
+        }, (payload) => {
+          console.log('[Supabase Sync] Remote change detected:', payload.eventType);
+          
+          if (payload.eventType === 'INSERT' || payload.eventType === 'UPDATE') {
+            const remote = payload.new as FamilyMember;
+            setMembers(prev => {
+              const index = prev.findIndex(m => m.id === remote.id);
+              if (index === -1) return [...prev, remote];
+              if ((remote.last_updated || 0) > (prev[index].last_updated || 0)) {
+                const copy = [...prev];
+                copy[index] = remote;
+                return copy;
+              }
+              return prev;
+            });
+          } else if (payload.eventType === 'DELETE') {
+            const oldId = (payload.old as any).id;
+            setMembers(prev => prev.filter(m => m.id !== oldId));
+          }
+        })
+        .subscribe((status) => {
+          console.log('[Supabase Status] Connection:', status);
+        });
+
+      return () => {
+        supabase.removeChannel(channel);
+      };
     }
   }, [syncConfig.url, syncConfig.key, syncConfig.familyId]);
 

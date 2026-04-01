@@ -1,73 +1,58 @@
-# React + TypeScript + Vite
+# Family Birthday Tracker
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A premium, real-time family hub to track ages, celebrations, and upcoming milestones with precision.
 
-Currently, two official plugins are available:
+## 🚀 Quick Start (Supabase Setup)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+To enable cloud synchronization across devices, you must set up your Supabase database:
 
-## React Compiler
+1.  **Create Table**: Log in to your **Supabase Dashboard** -> **SQL Editor** -> **New Query**.
+2.  **Paste SQL**: Use this schema to create the required table:
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+```sql
+create table family_members (
+  id uuid primary key default gen_random_uuid(),
+  name text not null,
+  relation text not null,
+  dateOfBirth text not null,
+  color text not null,
+  avatar text,
+  family_id text not null,
+  last_updated bigint not null default (extract(epoch from now()) * 1000)::bigint
+);
 
-## Expanding the ESLint configuration
+-- Enable Realtime
+alter publication supabase_realtime add table family_members;
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+-- Enable Row Level Security (RLS)
+alter table family_members enable row level security;
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+-- Allow public access
+create policy "Allow public access" 
+on public.family_members 
+for all 
+using (true)
+with check (true);
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+3.  **App Config**: In your app, click the **Cloud icon** and enter your Project URL and API Key.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## Features
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+- **Precision Age Engine**: Tracks years, months, days, hours, and minutes in real-time.
+- **Comparison Lab**: Analyze and rank family age ratios.
+- **Party Mode**: Full-screen confetti and birthday card designs.
+- **Milestone Badges**: Highlights major age milestones.
+- **Dark Mode**: Sleek theme support for night-time viewing.
+- **Add-to-Calendar**: Generate `.ics` files for your personal calendar.
+- **Data Export/Import**: Local JSON backups for complete control.
+
+## Tech Stack
+
+- **Vite** + **React 19**
+- **Tailwind CSS 4**
+- **Supabase** (Real-time synchronization)
+- **Framer Motion** (Smooth UI animations)
+- **Lucide React** (Premium icons)
+
+Built with ❤️ for Family Unity.
