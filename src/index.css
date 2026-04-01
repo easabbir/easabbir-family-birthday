@@ -1,6 +1,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&family=Fira+Sans:wght@300;400;500;600;700&display=swap');
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 @theme {
   --color-primary: #2563EB;
   --color-secondary: #3B82F6;
@@ -13,10 +15,13 @@
 }
 
 body {
-  background-color: var(--color-background);
-  color: var(--color-text);
+  @apply bg-slate-50 text-slate-900 transition-colors duration-500;
   font-family: var(--font-sans);
   margin: 0;
   padding: 0;
   min-height: 100vh;
+}
+
+.dark body {
+  @apply bg-slate-950 text-slate-100;
 }
