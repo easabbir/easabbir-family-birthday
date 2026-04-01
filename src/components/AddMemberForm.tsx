@@ -103,7 +103,7 @@ export const AddMemberForm: React.FC<Props> = ({ initialData, onSave, onClose })
           <input
             type="text"
             required
-            className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
+            className="w-full px-3 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-sm"
             value={name}
             onChange={(e) => setName(e.target.value)}
             placeholder="John Doe"
@@ -114,7 +114,7 @@ export const AddMemberForm: React.FC<Props> = ({ initialData, onSave, onClose })
           <input
             type="text"
             required
-            className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
+            className="w-full px-3 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-sm"
             value={relation}
             onChange={(e) => setRelation(e.target.value)}
             placeholder="Brother, Mother, etc."
@@ -127,7 +127,7 @@ export const AddMemberForm: React.FC<Props> = ({ initialData, onSave, onClose })
               type="date"
               required
               max={new Date().toISOString().split('T')[0]}
-              className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
+              className="w-full px-3 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-sm"
               value={dobDate}
               onChange={(e) => setDobDate(e.target.value)}
             />
@@ -136,7 +136,7 @@ export const AddMemberForm: React.FC<Props> = ({ initialData, onSave, onClose })
             <label className="block text-sm font-medium text-slate-600 mb-1">Time (Opt.)</label>
             <input
               type="time"
-              className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
+              className="w-full px-3 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-sm"
               value={dobTime}
               onChange={(e) => setDobTime(e.target.value)}
             />
@@ -146,13 +146,13 @@ export const AddMemberForm: React.FC<Props> = ({ initialData, onSave, onClose })
           <button
             type="button"
             onClick={onClose}
-            className="flex-1 py-2 px-4 bg-slate-100 text-slate-700 rounded-lg font-medium hover:bg-slate-200 transition-colors cursor-pointer"
+            className="flex-1 py-3 px-4 bg-slate-100 text-slate-700 rounded-lg font-medium hover:bg-slate-200 active:bg-slate-300 transition-colors cursor-pointer"
           >
             Cancel
           </button>
           <button
             type="submit"
-            className="flex-1 py-2 px-4 bg-orange-500 text-white rounded-lg font-medium hover:bg-orange-600 transition-colors flex justify-center items-center gap-2 cursor-pointer"
+            className="flex-1 py-3 px-4 bg-orange-500 text-white rounded-lg font-medium hover:bg-orange-600 active:bg-orange-700 active:scale-[0.98] transition-all flex justify-center items-center gap-2 cursor-pointer"
           >
             {initialData ? <Save size={18} /> : <PlusCircle size={18} />}
             <span>{initialData ? 'Save Changes' : 'Add Member'}</span>

@@ -80,7 +80,7 @@ function App() {
           
           <button
             onClick={openAddForm}
-            className="flex items-center gap-2 px-6 py-3 bg-slate-900 text-white font-semibold rounded-xl hover:bg-slate-800 transition-all shadow-md hover:shadow-lg focus:ring-4 focus:ring-slate-200 cursor-pointer"
+            className="flex items-center justify-center w-full md:w-auto gap-2 px-6 py-3.5 md:py-3 bg-slate-900 text-white font-semibold rounded-xl hover:bg-slate-800 active:scale-[0.98] transition-all shadow-md hover:shadow-lg focus:ring-4 focus:ring-slate-200 cursor-pointer"
           >
             <Plus size={20} />
             Add Member
@@ -106,7 +106,7 @@ function App() {
             <p className="text-slate-500 mb-8">Add your first family member to see their real-time age infographic.</p>
             <button
                onClick={openAddForm}
-               className="inline-flex items-center gap-2 px-6 py-3 bg-orange-500 text-white font-semibold rounded-xl hover:bg-orange-600 transition-all shadow-md cursor-pointer"
+               className="inline-flex items-center justify-center w-full sm:w-auto gap-2 px-6 py-3.5 sm:py-3 bg-orange-500 text-white font-semibold rounded-xl hover:bg-orange-600 active:scale-[0.98] transition-all shadow-md cursor-pointer"
             >
               <Plus size={20} />
               Add First Member
