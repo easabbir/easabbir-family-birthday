@@ -2,7 +2,9 @@ import { useEffect, useState } from 'react';
 import type { FamilyMember } from '../types';
 import { getExactAge, getYearProgress, getDaysToNextBirthday, type AgeBreakdown } from '../utils/date';
 import { InfographicProgressBar } from './InfographicProgressBar';
-import { Calendar, User, Clock, Trash2, Pencil } from 'lucide-react';
+import { Clock, Trash2, Pencil, PartyPopper, Star, Download } from 'lucide-react';
+import { downloadICS } from '../utils/calendar';
+import { isSameDay } from 'date-fns';
 
 interface Props {
   member: FamilyMember;
@@ -10,14 +12,16 @@ interface Props {
   onEdit: (member: FamilyMember) => void;
 }
 
+const MILESTONES = [1, 5, 10, 13, 16, 18, 20, 21, 25, 30, 40, 50, 60, 65, 70, 75, 80, 85, 90, 95, 100];
+
 export const AgeCard: React.FC<Props> = ({ member, onRemove, onEdit }) => {
   const [age, setAge] = useState<AgeBreakdown | null>(null);
   const [progress, setProgress] = useState<number>(0);
   const [daysToNext, setDaysToNext] = useState<number>(0);
   const [isInvalidDate, setIsInvalidDate] = useState(false);
+  const [isBirthday, setIsBirthday] = useState(false);
 
   useEffect(() => {
-    // Initial calculation
     const dob = new Date(member.dateOfBirth);
     if (isNaN(dob.getTime())) {
       setIsInvalidDate(true);
@@ -25,82 +29,82 @@ export const AgeCard: React.FC<Props> = ({ member, onRemove, onEdit }) => {
     }
     setIsInvalidDate(false);
 
-    setAge(getExactAge(dob, new Date()));
-    setProgress(getYearProgress(dob, new Date()));
-    setDaysToNext(getDaysToNextBirthday(dob, new Date()));
+    const update = () => {
+      const now = new Date();
+      setAge(getExactAge(dob, now));
+      setProgress(getYearProgress(dob, now));
+      setDaysToNext(getDaysToNextBirthday(dob, now));
+      
+      const bdayThisYear = new Date(now.getFullYear(), dob.getMonth(), dob.getDate());
+      setIsBirthday(isSameDay(bdayThisYear, now));
+    };
 
-    const interval = setInterval(() => {
-      const currentTime = new Date();
-      setAge(getExactAge(dob, currentTime));
-      setProgress(getYearProgress(dob, currentTime));
-      setDaysToNext(getDaysToNextBirthday(dob, currentTime));
-    }, 1000);
-
+    update();
+    const interval = setInterval(update, 1000);
     return () => clearInterval(interval);
   }, [member.dateOfBirth]);
 
   if (isInvalidDate) {
     return (
-      <div className="bg-red-50 rounded-2xl shadow-sm border border-red-100 p-6 flex flex-col relative group">
+      <div className="bg-red-50 dark:bg-red-950/20 rounded-2xl shadow-sm border border-red-100 dark:border-red-900/30 p-6 flex flex-col relative group">
         <div className="absolute top-4 right-4 flex gap-2">
-          <button 
-            onClick={() => onEdit(member)}
-            className="text-red-300 hover:text-blue-500 transition-colors"
-            aria-label="Edit member"
-          >
-            <Pencil size={18} />
-          </button>
-          <button 
-            onClick={() => onRemove(member.id)}
-            className="text-red-300 hover:text-red-600 transition-colors"
-            aria-label="Remove member"
-          >
-            <Trash2 size={18} />
-          </button>
+          <button onClick={() => onEdit(member)} className="text-red-300 hover:text-blue-500 transition-colors cursor-pointer"><Pencil size={18} /></button>
+          <button onClick={() => onRemove(member.id)} className="text-red-300 hover:text-red-600 transition-colors cursor-pointer"><Trash2 size={18} /></button>
         </div>
-        <div className="text-red-700 font-medium">Invalid date for {member.name}. Please edit the date.</div>
+        <div className="text-red-700 dark:text-red-400 font-medium">Invalid date for {member.name}. Please edit.</div>
       </div>
     );
   }
 
   if (!age) return null;
 
+  const nextMilestone = MILESTONES.find(m => m > age.years);
+  const isMilestoneUpcoming = nextMilestone && (nextMilestone - age.years === 1) && (daysToNext < 60);
+
   const dataPoints = [
     { label: 'Years', value: age.years, highlight: true },
     { label: 'Months', value: age.months },
     { label: 'Days', value: age.days },
-    { label: 'Hours', value: age.hours },
-    { label: 'Minutes', value: age.minutes },
+    { label: 'Hrs', value: age.hours },
+    { label: 'Min', value: age.minutes },
   ];
 
   return (
-    <div className="bg-white rounded-2xl shadow-[0_4px_24px_-8px_rgba(0,0,0,0.1)] border border-slate-100 overflow-hidden flex flex-col transition-all hover:shadow-[0_8px_32px_-8px_rgba(0,0,0,0.15)] group relative">
-      <div 
-        className="h-2 w-full"
-        style={{ backgroundColor: member.color }}
-      />
+    <div className={`relative flex flex-col transition-all duration-500 rounded-3xl border overflow-hidden group
+      ${isBirthday 
+        ? 'bg-linear-to-b from-white to-orange-50/30 dark:from-slate-900 dark:to-orange-950/20 border-orange-200 dark:border-orange-900 shadow-xl scale-[1.02] z-10' 
+        : 'bg-white dark:bg-slate-900 border-slate-100 dark:border-slate-800 shadow-sm hover:shadow-md hover:border-slate-200 dark:hover:border-slate-700'}
+    `}>
+      {/* Accent Line */}
+      <div className="h-2 w-full" style={{ backgroundColor: isBirthday ? '#f97316' : member.color }} />
       
-      <div className="absolute top-4 right-4 flex gap-2">
+      {/* Floating Actions */}
+      <div className="absolute top-4 right-4 flex gap-2 items-center opacity-0 group-hover:opacity-100 transition-opacity z-20">
+        <button 
+          onClick={() => downloadICS(member)}
+          className="p-2 bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm text-slate-400 hover:text-blue-500 rounded-lg border border-slate-100 dark:border-slate-700 transition-colors cursor-pointer"
+          title="Add to Calendar"
+        >
+          <Download size={16} />
+        </button>
         <button 
           onClick={() => onEdit(member)}
-          className="text-slate-300 hover:text-blue-500 transition-colors opacity-0 group-hover:opacity-100 cursor-pointer"
-          aria-label="Edit member"
+          className="p-2 bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm text-slate-400 hover:text-blue-500 rounded-lg border border-slate-100 dark:border-slate-700 transition-colors cursor-pointer"
         >
-          <Pencil size={18} />
+          <Pencil size={16} />
         </button>
         <button 
           onClick={() => onRemove(member.id)}
-          className="text-slate-300 hover:text-red-500 transition-colors opacity-0 group-hover:opacity-100 cursor-pointer"
-          aria-label="Remove member"
+          className="p-2 bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm text-slate-400 hover:text-red-500 rounded-lg border border-slate-100 dark:border-slate-700 transition-colors cursor-pointer"
         >
-          <Trash2 size={18} />
+          <Trash2 size={16} />
         </button>
       </div>
 
-      <div className="p-4 md:p-5">
-        <div className="flex items-start gap-3 mb-4">
+      <div className="p-6 md:p-7">
+        <div className="flex items-start gap-4 mb-6">
           <div 
-            className="w-10 h-10 rounded-full flex items-center justify-center font-bold text-base text-white font-mono shadow-sm flex-shrink-0 overflow-hidden"
+            className="w-14 h-14 rounded-2xl flex items-center justify-center font-black text-xl text-white shadow-lg shrink-0 overflow-hidden relative"
             style={{ backgroundColor: member.color }}
           >
             {member.avatar ? (
@@ -108,54 +112,60 @@ export const AgeCard: React.FC<Props> = ({ member, onRemove, onEdit }) => {
             ) : (
               member.name.charAt(0).toUpperCase()
             )}
+            {isBirthday && (
+              <div className="absolute inset-0 bg-black/10 animate-pulse flex items-center justify-center">
+                <PartyPopper size={24} />
+              </div>
+            )}
           </div>
-          <div>
-            <h2 className="text-xl font-bold text-slate-800 tracking-tight flex items-center gap-2">
-              <User size={18} className="text-slate-400" />
+          <div className="min-w-0">
+            <h2 className="text-2xl font-black text-slate-800 dark:text-white tracking-tight truncate flex items-center gap-2">
               {member.name}
+              {isBirthday && <PartyPopper className="text-orange-500 shrink-0" size={20} />}
             </h2>
-            <div className="flex items-center gap-2 text-sm text-slate-500 mt-1 font-medium">
-              <span className="px-2 py-0.5 rounded text-xs" style={{ backgroundColor: `${member.color}15`, color: member.color }}>
+            <div className="flex flex-wrap items-center gap-2 mt-1">
+              <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-widest border" style={{ backgroundColor: `${member.color}10`, color: member.color, borderColor: `${member.color}30` }}>
                 {member.relation}
               </span>
-              <span>•</span>
-              <span className="flex items-center gap-1">
-                <Calendar size={14} />
-                {new Date(member.dateOfBirth).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric'})}
-              </span>
+              {isMilestoneUpcoming && (
+                <span className="flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-widest bg-yellow-100 text-yellow-700 border border-yellow-200">
+                  <Star size={10} fill="currentColor" />
+                  Big {nextMilestone}!
+                </span>
+              )}
             </div>
           </div>
         </div>
 
-        {/* Dense Data Grid */}
-        <div className="grid grid-cols-3 md:grid-cols-5 gap-2 mb-5">
+        {/* Precise Age Grid */}
+        <div className="grid grid-cols-5 gap-2 mb-6">
           {dataPoints.map((point) => (
             <div 
               key={point.label} 
-              className={`flex flex-col items-center justify-center p-2 rounded-lg border \${point.highlight ? 'bg-slate-50 border-slate-200' : 'bg-white border-slate-100'} shadow-sm relative overflow-hidden`}
+              className={`flex flex-col items-center justify-center py-3 rounded-2xl border transition-colors
+                ${point.highlight 
+                  ? 'bg-slate-50 dark:bg-slate-800/50 border-slate-200 dark:border-slate-700 shadow-inner' 
+                  : 'bg-white dark:bg-slate-900 border-slate-100 dark:border-slate-800'}`}
             >
-              {point.highlight && (
-                <div 
-                  className="absolute top-0 left-0 w-full h-0.5 opacity-50"
-                  style={{ backgroundColor: member.color }}
-                />
-              )}
-              <span className="text-xl font-mono font-bold text-slate-800">
+              <span className={`text-xl font-mono font-black leading-none ${point.highlight ? 'text-slate-900 dark:text-white' : 'text-slate-600 dark:text-slate-400'}`}>
                 {String(point.value).padStart(2, '0')}
               </span>
-              <span className="text-[9px] uppercase tracking-wider font-semibold text-slate-400 mt-1">
+              <span className="text-[8px] md:text-[9px] uppercase tracking-widest font-black text-slate-400 mt-2">
                 {point.label}
               </span>
             </div>
           ))}
         </div>
 
-        <div className="pt-2 border-t border-slate-100">
-          <div className="flex items-center gap-2 text-slate-700 font-medium mb-3">
-             <Clock size={16} style={{ color: member.color }} />
-             <span>Time visualization</span>
+        <div className="space-y-4">
+          <div className="flex items-center justify-between text-xs font-bold uppercase tracking-widest">
+            <div className="flex items-center gap-2 text-slate-500 dark:text-slate-400">
+               <Clock size={14} />
+               <span>Year Progress</span>
+            </div>
+            <div className="text-slate-800 dark:text-slate-200">{progress.toFixed(1)}%</div>
           </div>
-          <InfographicProgressBar percentage={progress} color={member.color} daysToNext={daysToNext} />
+          <InfographicProgressBar percentage={progress} color={isBirthday ? '#f97316' : member.color} daysToNext={daysToNext} />
         </div>
       </div>
     </div>

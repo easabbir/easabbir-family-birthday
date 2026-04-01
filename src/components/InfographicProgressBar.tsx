@@ -8,11 +8,9 @@ interface Props {
 }
 
 export const InfographicProgressBar: React.FC<Props> = ({ percentage, color, daysToNext }) => {
-  // Use state to delay percentage application for smooth load animation
   const [targetWidth, setTargetWidth] = useState(0);
 
   useEffect(() => {
-    // slight delay for animation effect
     const timer = setTimeout(() => {
       setTargetWidth(percentage);
     }, 100);
@@ -21,27 +19,26 @@ export const InfographicProgressBar: React.FC<Props> = ({ percentage, color, day
 
   return (
     <div className="w-full">
-      <div className="flex justify-between items-end mb-2">
-        <span className="text-xs font-semibold text-slate-500 tracking-wider uppercase">Year Progress</span>
-        <span className="text-sm font-mono font-bold" style={{ color }}>
-          {Math.round(percentage)}%
-        </span>
-      </div>
-      <div className="h-3 w-full bg-slate-100 rounded-full overflow-hidden mb-1 relative border border-slate-200 shadow-inner">
+      <div className="h-4 w-full bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden mb-2 relative border border-slate-200 dark:border-slate-700 shadow-inner">
         <motion.div
           className="h-full rounded-full relative"
           style={{ backgroundColor: color }}
           initial={{ width: 0 }}
           animate={{ width: `${targetWidth}%` }}
-          transition={{ duration: 1, ease: 'easeOut' }}
+          transition={{ duration: 1.5, ease: [0.34, 1.56, 0.64, 1] }} // Bouncy ease
         >
-          {/* Subtle shine effect */}
-          <div className="absolute top-0 left-0 right-0 h-1 bg-white/30 rounded-t-full"></div>
+          {/* Shine effect */}
+          <div className="absolute inset-0 bg-linear-to-b from-white/30 to-transparent"></div>
+          
+          {/* Animated glow */}
+          <div className="absolute top-0 right-0 h-full w-4 bg-white/20 blur-sm animate-pulse"></div>
         </motion.div>
       </div>
-      <div className="flex justify-between text-[10px] text-slate-400 font-mono">
-        <span>Last BD</span>
-        <span className="text-right">Next BD <span className="font-semibold text-slate-500 ml-0.5">({daysToNext}d left)</span></span>
+      <div className="flex justify-between text-[9px] font-black uppercase tracking-widest text-slate-400 dark:text-slate-500">
+        <span>Passed</span>
+        <span className="text-right">
+          <span className="text-orange-500 dark:text-orange-400">{daysToNext} Days</span> Remaining
+        </span>
       </div>
     </div>
   );

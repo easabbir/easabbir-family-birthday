@@ -5,4 +5,5 @@ export interface FamilyMember {
   dateOfBirth: string; // ISO string
   color: string;
   avatar?: string;
+  last_updated: number; // unix timestamp for simple sync
 }

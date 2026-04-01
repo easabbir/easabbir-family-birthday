@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { PlusCircle, Save } from 'lucide-react';
+import { PlusCircle, Save, X, Camera } from 'lucide-react';
 import type { FamilyMember } from '../types';
 
 interface Props {
@@ -19,38 +19,23 @@ export const AddMemberForm: React.FC<Props> = ({ initialData, onSave, onClose })
     if (initialData) {
       setName(initialData.name);
       setRelation(initialData.relation);
-      
       try {
         const d = new Date(initialData.dateOfBirth);
         if (!isNaN(d.getTime())) {
-          // Format local date correctly for input
           setDobDate(`${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`);
           setDobTime(`${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`);
         }
-      } catch (e) {
-        // Fallback
-      }
+      } catch (e) {}
       setAvatar(initialData.avatar || '');
-    } else {
-      setName('');
-      setRelation('');
-      setDobDate('');
-      setDobTime('');
-      setAvatar('');
     }
   }, [initialData]);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      if (file.size > 2 * 1024 * 1024) { 
-        alert("Image too large (max 2MB)");
-        return;
-      }
+      if (file.size > 2 * 1024 * 1024) return alert("Image too large (max 2MB)");
       const reader = new FileReader();
-      reader.onloadend = () => {
-        setAvatar(reader.result as string);
-      };
+      reader.onloadend = () => setAvatar(reader.result as string);
       reader.readAsDataURL(file);
     }
   };
@@ -58,103 +43,87 @@ export const AddMemberForm: React.FC<Props> = ({ initialData, onSave, onClose })
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!name || !relation || !dobDate) return;
-    
-    // Combine date and time (default to midnight if no time)
     const timeStr = dobTime || '00:00';
     const finalDateStr = `${dobDate}T${timeStr}:00`;
-    
-    // Ensure the date is valid before saving
     const parsedDate = new Date(finalDateStr);
-    if (isNaN(parsedDate.getTime())) {
-      alert("Please enter a valid date.");
-      return;
-    }
-
+    if (isNaN(parsedDate.getTime())) return alert("Please enter a valid date.");
     onSave(name, relation, parsedDate.toISOString(), avatar, initialData?.id);
-    onClose();
   };
 
   return (
-    <div className="bg-white p-6 rounded-xl shadow-lg border border-slate-200 w-full max-w-md">
-      <h3 className="text-xl font-bold font-mono text-slate-800 mb-4">{initialData ? 'Edit Family Member' : 'Add Family Member'}</h3>
-      <form onSubmit={handleSubmit} className="space-y-4">
-        
-        <div className="flex items-center gap-4">
-          <div className="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center flex-shrink-0 border border-slate-200 overflow-hidden">
-            {avatar ? (
-              <img src={avatar} alt="Avatar" className="w-full h-full object-cover" />
-            ) : (
-              <span className="text-xs text-slate-400 font-medium">Pic</span>
-            )}
+    <div className="bg-white dark:bg-slate-900 p-8 rounded-[2rem] shadow-2xl border border-slate-200 dark:border-slate-800 w-full max-w-md relative overflow-hidden">
+      <div className="absolute top-0 left-0 w-full h-1.5 bg-linear-to-r from-blue-500 via-orange-500 to-rose-500"></div>
+      
+      <div className="flex justify-between items-center mb-8">
+        <h3 className="text-2xl font-black tracking-tight text-slate-800 dark:text-white">
+          {initialData ? 'Update Member' : 'New Member'}
+        </h3>
+        <button onClick={onClose} className="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors text-slate-400 cursor-pointer">
+          <X size={20} />
+        </button>
+      </div>
+
+      <form onSubmit={handleSubmit} className="space-y-6">
+        <div className="flex items-center gap-5 bg-slate-50 dark:bg-slate-800/50 p-4 rounded-2xl border border-slate-100 dark:border-slate-800">
+          <div className="relative group shrink-0">
+            <div className="w-16 h-16 rounded-2xl bg-white dark:bg-slate-800 flex items-center justify-center border-2 border-dashed border-slate-200 dark:border-slate-700 overflow-hidden">
+              {avatar ? (
+                <img src={avatar} alt="Avatar" className="w-full h-full object-cover" />
+              ) : (
+                <Camera size={24} className="text-slate-300" />
+              )}
+            </div>
+            <input type="file" accept="image/*" onChange={handleFileChange} className="absolute inset-0 opacity-0 cursor-pointer" />
           </div>
           <div className="flex-1">
-            <label className="block text-xs font-medium text-slate-600 mb-1">Upload Picture (Optional, max 2MB)</label>
-            <input 
-              type="file" 
-              accept="image/*" 
-              onChange={handleFileChange} 
-              className="text-xs text-slate-500 file:mr-3 file:py-1 file:px-3 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 w-full"
-            />
+            <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">Profile Photo</label>
+            <p className="text-[10px] text-slate-500">Tap to upload (Max 2MB)</p>
           </div>
         </div>
 
-        <div>
-          <label className="block text-sm font-medium text-slate-600 mb-1">Name</label>
-          <input
-            type="text"
-            required
-            className="w-full px-3 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-sm"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            placeholder="John Doe"
-          />
-        </div>
-        <div>
-          <label className="block text-sm font-medium text-slate-600 mb-1">Relation</label>
-          <input
-            type="text"
-            required
-            className="w-full px-3 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-sm"
-            value={relation}
-            onChange={(e) => setRelation(e.target.value)}
-            placeholder="Brother, Mother, etc."
-          />
-        </div>
-        <div className="flex gap-3">
-          <div className="flex-[2]">
-            <label className="block text-sm font-medium text-slate-600 mb-1">Date of Birth</label>
+        <div className="space-y-4">
+          <div>
+            <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2 ml-1">Full Name</label>
             <input
-              type="date"
-              required
-              max={new Date().toISOString().split('T')[0]}
-              className="w-full px-3 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-sm"
-              value={dobDate}
-              onChange={(e) => setDobDate(e.target.value)}
+              type="text" required value={name} onChange={(e) => setName(e.target.value)}
+              className="w-full px-4 py-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-4 focus:ring-orange-500/10 outline-none transition-all dark:text-white"
+              placeholder="e.g. John Smith"
             />
           </div>
-          <div className="flex-1">
-            <label className="block text-sm font-medium text-slate-600 mb-1">Time (Opt.)</label>
+
+          <div>
+            <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2 ml-1">Relationship</label>
             <input
-              type="time"
-              className="w-full px-3 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-sm"
-              value={dobTime}
-              onChange={(e) => setDobTime(e.target.value)}
+              type="text" required value={relation} onChange={(e) => setRelation(e.target.value)}
+              className="w-full px-4 py-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-4 focus:ring-orange-500/10 outline-none transition-all dark:text-white"
+              placeholder="e.g. Brother, Cousin"
             />
           </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2 ml-1">Birth Date</label>
+              <input
+                type="date" required max={new Date().toISOString().split('T')[0]} value={dobDate} onChange={(e) => setDobDate(e.target.value)}
+                className="w-full px-4 py-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-4 focus:ring-orange-500/10 outline-none transition-all dark:text-white text-sm"
+              />
+            </div>
+            <div>
+              <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2 ml-1">Time (Optional)</label>
+              <input
+                type="time" value={dobTime} onChange={(e) => setDobTime(e.target.value)}
+                className="w-full px-4 py-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-4 focus:ring-orange-500/10 outline-none transition-all dark:text-white text-sm"
+              />
+            </div>
+          </div>
         </div>
+
         <div className="flex gap-3 pt-4">
           <button
-            type="button"
-            onClick={onClose}
-            className="flex-1 py-3 px-4 bg-slate-100 text-slate-700 rounded-lg font-medium hover:bg-slate-200 active:bg-slate-300 transition-colors cursor-pointer"
-          >
-            Cancel
-          </button>
-          <button
             type="submit"
-            className="flex-1 py-3 px-4 bg-orange-500 text-white rounded-lg font-medium hover:bg-orange-600 active:bg-orange-700 active:scale-[0.98] transition-all flex justify-center items-center gap-2 cursor-pointer"
+            className="flex-1 py-4 bg-orange-500 text-white font-black rounded-2xl shadow-xl shadow-orange-500/20 hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer"
           >
-            {initialData ? <Save size={18} /> : <PlusCircle size={18} />}
+            {initialData ? <Save size={20} /> : <PlusCircle size={20} />}
             <span>{initialData ? 'Save Changes' : 'Add Member'}</span>
           </button>
         </div>
