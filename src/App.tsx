@@ -270,7 +270,7 @@ function App() {
         )}
       </div>
       <footer className="max-w-6xl mx-auto mt-24 pb-12 pt-8 border-t border-slate-200 dark:border-slate-800 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 text-center">
-        Powered by Precision Engine v2.0 &bull; Built for Family Unity
+        Built with ❤️ by easabbir &bull; Built for Family Unity
       </footer>
     </div>
   );
