@@ -72,8 +72,8 @@ export const AgeCard: React.FC<Props> = ({ member, onRemove, onEdit }) => {
   return (
     <div className={`relative flex flex-col transition-all duration-500 rounded-3xl border overflow-hidden group
       ${isBirthday 
-        ? 'bg-linear-to-b from-white to-orange-50/30 dark:from-slate-900 dark:to-orange-950/20 border-orange-200 dark:border-orange-900 shadow-xl scale-[1.02] z-10' 
-        : 'bg-white dark:bg-slate-900 border-slate-100 dark:border-slate-800 shadow-sm hover:shadow-md hover:border-slate-200 dark:hover:border-slate-700'}
+        ? 'glass-panel-heavy border-orange-400/50 dark:border-orange-500/50 shadow-[0_0_30px_rgba(249,115,22,0.3)] scale-[1.02] z-10' 
+        : 'glass-panel hover:glass-panel-heavy'}
     `}>
       {/* Accent Line */}
       <div className="h-2 w-full" style={{ backgroundColor: isBirthday ? '#f97316' : member.color }} />
@@ -82,20 +82,20 @@ export const AgeCard: React.FC<Props> = ({ member, onRemove, onEdit }) => {
       <div className="absolute top-4 right-4 flex gap-2 items-center opacity-0 group-hover:opacity-100 transition-opacity z-20">
         <button 
           onClick={() => downloadICS(member)}
-          className="p-2 bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm text-slate-400 hover:text-blue-500 rounded-lg border border-slate-100 dark:border-slate-700 transition-colors cursor-pointer"
+          className="p-2 glass-button text-slate-600 dark:text-slate-300 hover:text-indigo-500 dark:hover:text-indigo-400 rounded-lg cursor-pointer"
           title="Add to Calendar"
         >
           <Download size={16} />
         </button>
         <button 
           onClick={() => onEdit(member)}
-          className="p-2 bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm text-slate-400 hover:text-blue-500 rounded-lg border border-slate-100 dark:border-slate-700 transition-colors cursor-pointer"
+          className="p-2 glass-button text-slate-600 dark:text-slate-300 hover:text-indigo-500 dark:hover:text-indigo-400 rounded-lg cursor-pointer"
         >
           <Pencil size={16} />
         </button>
         <button 
           onClick={() => onRemove(member.id)}
-          className="p-2 bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm text-slate-400 hover:text-red-500 rounded-lg border border-slate-100 dark:border-slate-700 transition-colors cursor-pointer"
+          className="p-2 glass-button text-slate-600 dark:text-slate-300 hover:text-rose-500 dark:hover:text-rose-400 rounded-lg cursor-pointer"
         >
           <Trash2 size={16} />
         </button>
@@ -119,16 +119,16 @@ export const AgeCard: React.FC<Props> = ({ member, onRemove, onEdit }) => {
             )}
           </div>
           <div className="min-w-0">
-            <h2 className="text-2xl font-black text-slate-800 dark:text-white tracking-tight truncate flex items-center gap-2">
+            <h2 className="text-2xl font-black text-slate-800 dark:text-white tracking-tight truncate flex items-center gap-2 drop-shadow-sm">
               {member.name}
-              {isBirthday && <PartyPopper className="text-orange-500 shrink-0" size={20} />}
+              {isBirthday && <PartyPopper className="text-orange-500 shrink-0 drop-shadow-[0_0_8px_rgba(249,115,22,0.6)]" size={20} />}
             </h2>
             <div className="flex flex-wrap items-center gap-2 mt-1">
-              <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-widest border" style={{ backgroundColor: `${member.color}10`, color: member.color, borderColor: `${member.color}30` }}>
+              <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-widest border border-white/20 shadow-sm backdrop-blur-sm" style={{ backgroundColor: `${member.color}20`, color: member.color }}>
                 {member.relation}
               </span>
               {isMilestoneUpcoming && (
-                <span className="flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-widest bg-yellow-100 text-yellow-700 border border-yellow-200">
+                <span className="flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-widest bg-yellow-400/20 text-yellow-600 dark:text-yellow-400 border border-yellow-400/30 backdrop-blur-sm">
                   <Star size={10} fill="currentColor" />
                   Big {nextMilestone}!
                 </span>
@@ -142,15 +142,15 @@ export const AgeCard: React.FC<Props> = ({ member, onRemove, onEdit }) => {
           {dataPoints.map((point) => (
             <div 
               key={point.label} 
-              className={`flex flex-col items-center justify-center py-3 rounded-2xl border transition-colors
+              className={`flex flex-col items-center justify-center py-3 rounded-2xl border transition-colors backdrop-blur-md
                 ${point.highlight 
-                  ? 'bg-slate-50 dark:bg-slate-800/50 border-slate-200 dark:border-slate-700 shadow-inner' 
-                  : 'bg-white dark:bg-slate-900 border-slate-100 dark:border-slate-800'}`}
+                  ? 'bg-white/20 dark:bg-white/10 border-white/40 dark:border-white/20 shadow-inner' 
+                  : 'bg-white/5 dark:bg-black/10 border-white/10 dark:border-white/5'}`}
             >
-              <span className={`text-xl font-mono font-black leading-none ${point.highlight ? 'text-slate-900 dark:text-white' : 'text-slate-600 dark:text-slate-400'}`}>
+              <span className={`text-xl font-mono font-black leading-none ${point.highlight ? 'text-slate-800 dark:text-white drop-shadow-sm' : 'text-slate-600 dark:text-slate-300'}`}>
                 {String(point.value).padStart(2, '0')}
               </span>
-              <span className="text-[8px] md:text-[9px] uppercase tracking-widest font-black text-slate-400 mt-2">
+              <span className="text-[8px] md:text-[9px] uppercase tracking-widest font-black text-slate-500 dark:text-slate-400 mt-2">
                 {point.label}
               </span>
             </div>
@@ -163,7 +163,7 @@ export const AgeCard: React.FC<Props> = ({ member, onRemove, onEdit }) => {
                <Clock size={14} />
                <span>Year Progress</span>
             </div>
-            <div className="text-slate-800 dark:text-slate-200">{progress.toFixed(1)}%</div>
+            <div className="text-slate-800 dark:text-slate-200 drop-shadow-sm">{progress.toFixed(1)}%</div>
           </div>
           <InfographicProgressBar percentage={progress} color={isBirthday ? '#f97316' : member.color} daysToNext={daysToNext} />
         </div>

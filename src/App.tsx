@@ -231,15 +231,21 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 font-sans text-slate-800 dark:text-slate-100 p-4 md:p-10 transition-colors duration-500">
-      <div className="max-w-6xl mx-auto">
-        <header className="flex flex-col lg:flex-row lg:items-center justify-between gap-8 mb-10">
+    <div className="relative min-h-screen font-sans text-slate-900 dark:text-slate-100 overflow-x-hidden transition-colors duration-500 bg-slate-50 dark:bg-[#0f111a]">
+      <div className="fixed inset-0 z-0 pointer-events-none">
+        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-indigo-500/40 dark:bg-indigo-600/30 rounded-full mix-blend-multiply dark:mix-blend-screen filter blur-[100px] opacity-70 animate-blob"></div>
+        <div className="absolute top-[20%] right-[-10%] w-[50%] h-[50%] bg-purple-500/40 dark:bg-purple-600/30 rounded-full mix-blend-multiply dark:mix-blend-screen filter blur-[100px] opacity-70 animate-blob animation-delay-2000"></div>
+        <div className="absolute bottom-[-10%] left-[20%] w-[60%] h-[40%] bg-pink-500/40 dark:bg-emerald-600/20 rounded-full mix-blend-multiply dark:mix-blend-screen filter blur-[100px] opacity-70 animate-blob animation-delay-4000"></div>
+      </div>
+      
+      <div className="max-w-6xl mx-auto relative z-10 p-4 md:p-10">
+        <header className="flex flex-col lg:flex-row lg:items-center justify-between gap-8 mb-10 glass-panel rounded-[2.5rem] p-6 lg:p-8">
           <div className="flex items-center gap-6">
-            <div className="w-16 h-16 md:w-20 md:h-20 rounded-[2rem] bg-white dark:bg-slate-900 shadow-2xl flex items-center justify-center overflow-hidden shrink-0 relative border-2 border-slate-100 dark:border-slate-800">
-              <img src="/logo.png" alt="Logo" className="w-[110%] h-[110%] scale-105 object-cover object-top absolute" />
+            <div className="w-16 h-16 md:w-20 md:h-20 rounded-[2rem] glass-panel-heavy shadow-2xl flex items-center justify-center overflow-hidden shrink-0 relative border-2 border-white/40 dark:border-white/10 group hover:scale-105 transition-transform duration-300">
+              <img src="/logo.png" alt="Logo" className="w-[110%] h-[110%] scale-105 object-cover object-top absolute opacity-90 group-hover:opacity-100 transition-opacity" />
             </div>
             <div>
-              <h1 className="text-3xl md:text-5xl font-black tracking-tighter text-transparent bg-clip-text bg-linear-to-r from-blue-600 via-orange-500 to-rose-500 mb-1">
+              <h1 className="text-3xl md:text-5xl font-black tracking-tighter text-transparent bg-clip-text bg-linear-to-r from-indigo-600 via-purple-500 to-pink-500 dark:from-indigo-400 dark:via-fuchsia-400 dark:to-pink-400 mb-1 drop-shadow-sm">
                 Family Portal
               </h1>
               <div className="flex items-center gap-3">
@@ -258,27 +264,27 @@ function App() {
           </div>
           
           <div className="flex items-center gap-3 flex-wrap">
-            <div className="flex bg-white dark:bg-slate-900 p-1.5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
-              <button onClick={() => setDarkMode(!darkMode)} className="p-2.5 text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-xl transition-all cursor-pointer">
+            <div className="flex glass-panel p-1.5 rounded-2xl shadow-sm">
+              <button onClick={() => setDarkMode(!darkMode)} className="p-2.5 text-slate-600 dark:text-slate-300 hover:bg-white/20 dark:hover:bg-white/10 rounded-xl transition-all cursor-pointer">
                 {darkMode ? <Sun size={20} /> : <Moon size={20} />}
               </button>
-              <div className="w-px h-5 bg-slate-200 dark:bg-slate-800 my-auto mx-1.5" />
-              <button onClick={exportData} className="p-2.5 text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-xl transition-all cursor-pointer" title="Export JSON">
+              <div className="w-px h-5 bg-slate-300 dark:bg-slate-600/50 my-auto mx-1.5" />
+              <button onClick={exportData} className="p-2.5 text-slate-600 dark:text-slate-300 hover:bg-white/20 dark:hover:bg-white/10 rounded-xl transition-all cursor-pointer" title="Export JSON">
                 <Download size={20} />
               </button>
-              <label className="p-2.5 text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-xl transition-all cursor-pointer inline-flex items-center" title="Import JSON">
+              <label className="p-2.5 text-slate-600 dark:text-slate-300 hover:bg-white/20 dark:hover:bg-white/10 rounded-xl transition-all cursor-pointer inline-flex items-center" title="Import JSON">
                 <Upload size={20} />
                 <input type="file" accept=".json" onChange={importData} className="hidden" />
               </label>
-              <div className="w-px h-5 bg-slate-200 dark:bg-slate-800 my-auto mx-1.5" />
-              <button onClick={() => setShowSyncSettings(true)} className="p-2.5 text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-xl transition-all cursor-pointer" title="Sync Settings">
+              <div className="w-px h-5 bg-slate-300 dark:bg-slate-600/50 my-auto mx-1.5" />
+              <button onClick={() => setShowSyncSettings(true)} className="p-2.5 text-slate-600 dark:text-slate-300 hover:bg-white/20 dark:hover:bg-white/10 rounded-xl transition-all cursor-pointer" title="Sync Settings">
                 <Settings size={20} />
               </button>
             </div>
 
             <button
               onClick={() => setShowAddForm(true)}
-              className="flex-1 lg:flex-none flex items-center justify-center gap-2 px-8 py-4 bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-black rounded-2xl hover:scale-105 active:scale-95 transition-all shadow-xl cursor-pointer"
+              className="flex-1 lg:flex-none flex items-center justify-center gap-2 px-8 py-4 bg-indigo-600 hover:bg-indigo-500 text-white font-black rounded-2xl hover:scale-105 active:scale-95 transition-all shadow-[0_0_20px_rgba(79,70,229,0.4)] cursor-pointer backdrop-blur-md border border-indigo-400/30"
             >
               <Plus size={22} />
               Add Member
@@ -287,11 +293,11 @@ function App() {
         </header>
 
         {/* Tab Switcher */}
-        <div className="flex p-1.5 bg-white/50 dark:bg-slate-900/50 backdrop-blur-sm rounded-3xl border border-slate-200 dark:border-slate-800 w-fit mb-12">
-          <button onClick={() => setActiveTab('dashboard')} className={`flex items-center gap-2 px-6 py-3 rounded-2xl font-black text-sm uppercase tracking-widest transition-all cursor-pointer ${activeTab === 'dashboard' ? 'bg-orange-500 text-white shadow-lg' : 'text-slate-400'}`}>
+        <div className="flex p-1.5 glass-panel rounded-3xl w-fit mb-12">
+          <button onClick={() => setActiveTab('dashboard')} className={`flex items-center gap-2 px-6 py-3 rounded-2xl font-black text-sm uppercase tracking-widest transition-all cursor-pointer ${activeTab === 'dashboard' ? 'bg-indigo-500 text-white shadow-[0_0_15px_rgba(99,102,241,0.5)]' : 'text-slate-500 dark:text-slate-400 hover:bg-white/10'}`}>
             <LayoutDashboard size={18} /> Dashboard
           </button>
-          <button onClick={() => setActiveTab('comparison')} className={`flex items-center gap-2 px-6 py-3 rounded-2xl font-black text-sm uppercase tracking-widest transition-all cursor-pointer ${activeTab === 'comparison' ? 'bg-orange-500 text-white shadow-lg' : 'text-slate-400'}`}>
+          <button onClick={() => setActiveTab('comparison')} className={`flex items-center gap-2 px-6 py-3 rounded-2xl font-black text-sm uppercase tracking-widest transition-all cursor-pointer ${activeTab === 'comparison' ? 'bg-indigo-500 text-white shadow-[0_0_15px_rgba(99,102,241,0.5)]' : 'text-slate-500 dark:text-slate-400 hover:bg-white/10'}`}>
             <ArrowLeftRight size={18} /> Comparison lab
           </button>
         </div>
@@ -328,15 +334,15 @@ function App() {
             {activeTab === 'comparison' && <AgeComparison members={members} />}
           </div>
         ) : (
-          <div className="bg-white dark:bg-slate-900 rounded-[3rem] border-2 border-dashed border-slate-300 dark:border-slate-800 p-20 text-center max-w-2xl mx-auto mt-12 shadow-2xl">
-            <Users size={64} className="mx-auto text-slate-200 dark:text-slate-800 mb-8" />
-            <h3 className="text-3xl font-black text-slate-800 dark:text-white mb-4 tracking-tighter">Your Family Circle</h3>
-            <p className="text-slate-500 dark:text-slate-400 mb-10 text-lg">Add your first family member to see real-time infographics, milestones, and birthday countdowns.</p>
-            <button onClick={() => setShowAddForm(true)} className="px-10 py-5 bg-orange-500 text-white font-black rounded-2xl hover:scale-105 active:scale-95 transition-all shadow-2xl cursor-pointer text-lg">Add First Member</button>
+          <div className="glass-panel-heavy rounded-[3rem] p-20 text-center max-w-2xl mx-auto mt-12">
+            <Users size={64} className="mx-auto text-slate-300 dark:text-slate-600 mb-8 drop-shadow-md" />
+            <h3 className="text-3xl font-black text-slate-800 dark:text-white mb-4 tracking-tighter drop-shadow-sm">Your Family Circle</h3>
+            <p className="text-slate-600 dark:text-slate-300 mb-10 text-lg">Add your first family member to see real-time infographics, milestones, and birthday countdowns.</p>
+            <button onClick={() => setShowAddForm(true)} className="px-10 py-5 bg-indigo-600 hover:bg-indigo-500 text-white font-black rounded-2xl hover:scale-105 active:scale-95 transition-all shadow-[0_0_20px_rgba(79,70,229,0.4)] cursor-pointer text-lg">Add First Member</button>
           </div>
         )}
       </div>
-      <footer className="max-w-6xl mx-auto mt-24 pb-12 pt-8 border-t border-slate-200 dark:border-slate-800 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 text-center">
+      <footer className="max-w-6xl mx-auto mt-24 pb-12 pt-8 text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400 text-center relative z-10 glass-panel rounded-t-[3rem] mt-12 bg-white/5 dark:bg-black/10 border-b-0 border-x-0">
         Built with ❤️ by easabbir &bull; Built for Family Unity
       </footer>
     </div>

@@ -48,9 +48,9 @@ export const YearTimeline: React.FC<Props> = ({ members }) => {
   if (members.length === 0) return null;
 
   return (
-    <div className="bg-white p-4 md:p-6 rounded-2xl shadow-sm border border-slate-200 mb-8 relative">
-      <h3 className="text-sm font-bold text-slate-800 mb-6 flex items-center gap-2">
-        <span className="w-2 h-2 rounded-full bg-blue-500"></span>
+    <div className="glass-panel p-4 md:p-6 rounded-2xl mb-8 relative">
+      <h3 className="text-sm font-bold text-slate-800 dark:text-white mb-6 flex items-center gap-2 drop-shadow-sm">
+        <span className="w-2 h-2 rounded-full bg-indigo-500 shadow-[0_0_8px_rgba(99,102,241,0.6)]"></span>
         {currentYear} Birthday Timeline
       </h3>
 
@@ -61,7 +61,7 @@ export const YearTimeline: React.FC<Props> = ({ members }) => {
           
           {/* The elapsed line representing how much of the year has passed */}
           <div 
-            className="absolute top-1/2 left-0 h-1 bg-blue-100 rounded-full -translate-y-1/2"
+            className="absolute top-1/2 left-0 h-1 bg-indigo-500/30 dark:bg-indigo-400/20 rounded-full -translate-y-1/2"
             style={{ width: `${todayPercentage}%` }}
           ></div>
 
@@ -69,10 +69,10 @@ export const YearTimeline: React.FC<Props> = ({ members }) => {
           {monthMarkers.map((m) => (
             <div 
               key={m.label} 
-              className="absolute top-1/2 w-px h-3 bg-slate-200 -translate-y-1/2"
+              className="absolute top-1/2 w-px h-3 bg-white/30 dark:bg-white/10 -translate-y-1/2"
               style={{ left: `${m.percentage}%` }}
             >
-              <span className="absolute top-4 -translate-x-1/2 text-[9px] md:text-[10px] font-mono text-slate-400 uppercase tracking-widest">
+              <span className="absolute top-4 -translate-x-1/2 text-[9px] md:text-[10px] font-mono text-slate-500 dark:text-slate-400 uppercase tracking-widest">
                 {m.label}
               </span>
             </div>
@@ -80,10 +80,10 @@ export const YearTimeline: React.FC<Props> = ({ members }) => {
 
           {/* Today Marker */}
           <div 
-            className="absolute top-1/2 w-0.5 h-6 bg-blue-500 -translate-y-1/2 z-10"
+            className="absolute top-1/2 w-0.5 h-6 bg-indigo-500 -translate-y-1/2 z-10 shadow-[0_0_8px_rgba(99,102,241,0.6)]"
             style={{ left: `${todayPercentage}%` }}
           >
-            <span className="absolute -top-6 left-1/2 -translate-x-1/2 text-[9px] md:text-[10px] font-bold text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded border border-blue-100 pointer-events-none">
+            <span className="absolute -top-6 left-1/2 -translate-x-1/2 text-[9px] md:text-[10px] font-bold text-indigo-600 dark:text-indigo-400 glass-panel px-1.5 py-0.5 rounded border-indigo-200/50 dark:border-indigo-500/30 pointer-events-none">
               TODAY
             </span>
           </div>
@@ -110,7 +110,7 @@ export const YearTimeline: React.FC<Props> = ({ members }) => {
                 </div>
                 
                 {/* Tooltip */}
-                <div className="absolute top-8 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity bg-slate-800 text-white text-[10px] py-1 px-2 rounded whitespace-nowrap pointer-events-none z-50">
+                <div className="absolute top-8 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity glass-panel-heavy text-slate-900 dark:text-white text-[10px] py-1 px-2 rounded whitespace-nowrap pointer-events-none z-50 shadow-lg">
                   {marker.member.name}
                 </div>
               </div>

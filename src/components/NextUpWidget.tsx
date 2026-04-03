@@ -56,10 +56,10 @@ export const NextUpWidget: React.FC<Props> = ({ members }) => {
   if (!nextMember) return null;
 
   return (
-    <div className={`mb-8 overflow-hidden rounded-3xl border transition-all duration-500 bg-linear-to-r ${
+    <div className={`mb-8 overflow-hidden rounded-[2.5rem] border transition-all duration-500 bg-linear-to-r relative ${
       isBirthday 
-      ? 'from-pink-500 to-orange-500 text-white border-transparent shadow-xl animate-pulse ring-4 ring-orange-500/20' 
-      : 'from-slate-900 via-slate-800 to-slate-900 text-white border-slate-700 shadow-lg'
+      ? 'glass-panel-heavy from-pink-500/40 to-orange-500/40 text-white border-orange-400/50 shadow-[0_0_40px_rgba(249,115,22,0.3)] animate-pulse' 
+      : 'glass-panel from-indigo-500/10 via-purple-500/5 to-pink-500/10 text-slate-900 dark:text-white border-white/20 dark:border-white/10 shadow-xl'
     }`}>
       <div className="flex flex-col md:flex-row p-6 md:p-8 items-center justify-between gap-6 relative">
         {/* Background Icons Decor */}
@@ -68,8 +68,8 @@ export const NextUpWidget: React.FC<Props> = ({ members }) => {
         </div>
 
         <div className="flex flex-col md:flex-row items-center gap-6 z-10 text-center md:text-left">
-          <div className={`w-20 h-20 rounded-full border-4 flex items-center justify-center shrink-0 overflow-hidden shadow-md ${
-            isBirthday ? 'border-white' : 'border-slate-700'
+          <div className={`w-20 h-20 rounded-2xl border-2 flex items-center justify-center shrink-0 overflow-hidden shadow-lg transition-transform duration-300 hover:scale-105 ${
+            isBirthday ? 'border-white/50 bg-white/20' : 'border-white/20 dark:border-white/10 bg-white/5 dark:bg-black/20'
           }`}>
             {nextMember.avatar ? (
               <img src={nextMember.avatar} alt={nextMember.name} className="w-full h-full object-cover" />
@@ -78,17 +78,17 @@ export const NextUpWidget: React.FC<Props> = ({ members }) => {
             )}
           </div>
           <div>
-            <span className={`text-xs font-bold uppercase tracking-widest px-2 py-0.5 rounded-full mb-2 inline-block ${
-              isBirthday ? 'bg-white/20 text-white' : 'bg-orange-500 text-white'
+            <span className={`text-[10px] font-black uppercase tracking-[0.2em] px-3 py-1 rounded-full mb-3 inline-block shadow-sm backdrop-blur-md border ${
+              isBirthday ? 'bg-white/30 text-white border-white/40' : 'bg-indigo-500 text-white border-indigo-400/30'
             }`}>
-              {isBirthday ? 'CELEBRATING TODAY' : 'NEXT BIRTHDAY'}
+              {isBirthday ? 'CELEBRATING TODAY' : 'NEXT UP'}
             </span>
-            <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight">
+            <h2 className="text-3xl md:text-4xl font-black tracking-tighter drop-shadow-sm transition-all duration-300">
               {nextMember.name}'s Celebration
             </h2>
-            <p className={`mt-1 font-medium ${isBirthday ? 'text-white/80' : 'text-slate-400'}`}>
+            <p className={`mt-1 font-bold uppercase tracking-widest text-[10px] md:text-sm ${isBirthday ? 'text-white/90' : 'text-slate-500 dark:text-slate-400'}`}>
               {isBirthday 
-                ? `Happy Birthday, ${nextMember.name}! Today is the big day!` 
+                ? `Happy Birthday! Today is the big day!` 
                 : `Coming up on ${new Date(nextMember.dateOfBirth).toLocaleDateString(undefined, { month: 'long', day: 'numeric' })}`}
             </p>
           </div>
@@ -102,9 +102,9 @@ export const NextUpWidget: React.FC<Props> = ({ members }) => {
               { label: 'Min', value: timeLeft.minutes },
               { label: 'Sec', value: timeLeft.seconds },
             ].map(unit => (
-              <div key={unit.label} className="bg-white/10 backdrop-blur-md rounded-2xl p-3 md:p-4 min-w-[70px] md:min-w-[80px] flex flex-col items-center border border-white/10">
-                <span className="text-xl md:text-2xl font-mono font-bold leading-none">{String(unit.value).padStart(2, '0')}</span>
-                <span className="text-[10px] md:text-xs uppercase font-bold text-white/50 mt-1">{unit.label}</span>
+              <div key={unit.label} className="glass-panel rounded-2xl p-3 md:p-4 min-w-[70px] md:min-w-[80px] flex flex-col items-center border border-white/30 dark:border-white/10 hover:glass-panel-heavy transition-all duration-300">
+                <span className="text-xl md:text-2xl font-mono font-black text-slate-800 dark:text-white leading-none drop-shadow-sm">{String(unit.value).padStart(2, '0')}</span>
+                <span className="text-[10px] md:text-xs uppercase font-black text-slate-500 dark:text-slate-400 mt-2 tracking-widest">{unit.label}</span>
               </div>
             ))}
           </div>

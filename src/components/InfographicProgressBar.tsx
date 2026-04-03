@@ -19,7 +19,7 @@ export const InfographicProgressBar: React.FC<Props> = ({ percentage, color, day
 
   return (
     <div className="w-full">
-      <div className="h-4 w-full bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden mb-2 relative border border-slate-200 dark:border-slate-700 shadow-inner">
+      <div className="h-4 w-full glass-panel dark:bg-black/40 rounded-full overflow-hidden mb-2 relative border-white/20 dark:border-white/5 shadow-inner">
         <motion.div
           className="h-full rounded-full relative"
           style={{ backgroundColor: color }}
@@ -28,10 +28,11 @@ export const InfographicProgressBar: React.FC<Props> = ({ percentage, color, day
           transition={{ duration: 1.5, ease: [0.34, 1.56, 0.64, 1] }} // Bouncy ease
         >
           {/* Shine effect */}
-          <div className="absolute inset-0 bg-linear-to-b from-white/30 to-transparent"></div>
+          <div className="absolute inset-0 bg-linear-to-b from-white/40 to-transparent"></div>
           
           {/* Animated glow */}
-          <div className="absolute top-0 right-0 h-full w-4 bg-white/20 blur-sm animate-pulse"></div>
+          <div className="absolute top-0 right-0 h-full w-6 bg-white/30 blur-md animate-pulse"></div>
+          <div className="absolute top-0 left-0 h-full w-full bg-white/10 opacity-50 mix-blend-overlay"></div>
         </motion.div>
       </div>
       <div className="flex justify-between text-[9px] font-black uppercase tracking-widest text-slate-400 dark:text-slate-500">
