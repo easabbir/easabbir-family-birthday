@@ -192,17 +192,42 @@ function App() {
       reader.onload = (event) => {
         try {
           const data = JSON.parse(event.target?.result as string);
-          if (Array.isArray(data) && window.confirm(`Merge ${data.length} members?`)) {
+          if (!Array.isArray(data)) throw new Error('Invalid format: File must be an array of family members.');
+
+          // Basic Schema Validation
+          const validData = data.filter(m => m && typeof m === 'object' && m.id && m.name && m.dateOfBirth);
+          if (validData.length === 0) throw new Error('No valid family members found in this file.');
+
+          if (window.confirm(`Found ${validData.length} members. Merge with your current list?`)) {
             setMembers(prev => {
-              const existingIds = new Set(prev.map(m => m.id));
-              const newOnes = data.filter(m => !existingIds.has(m.id)).map(m => ({...m, last_updated: Date.now()}));
-              return [...prev, ...newOnes];
+              const merged = [...prev];
+              let added = 0;
+              let updated = 0;
+
+              validData.forEach((remote: any) => {
+                const localIndex = merged.findIndex(m => m.id === remote.id);
+                if (localIndex === -1) {
+                  merged.push(remote as FamilyMember);
+                  added++;
+                } else if ((remote.last_updated || 0) > (merged[localIndex].last_updated || 0)) {
+                  merged[localIndex] = remote as FamilyMember;
+                  updated++;
+                }
+              });
+
+              console.log(`[Import Success] Added: ${added}, Updated: ${updated}`);
+              return merged;
             });
           }
-        } catch (err) { alert('Invalid file'); }
+        } catch (err: any) {
+          alert(`Import failed: ${err.message}`);
+          console.error('Import error:', err);
+        }
       };
       reader.readAsText(file);
     }
+    // Reset file input so same file can be imported again if needed
+    e.target.value = '';
   };
 
   return (
